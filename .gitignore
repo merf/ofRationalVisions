@@ -1,0 +1,7 @@
+RationalVisions/obj
+RationalVisions/build
+
+*.app
+*.ncb
+
+.DS_Store

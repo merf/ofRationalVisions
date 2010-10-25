@@ -19,6 +19,7 @@
 		2832E941121C85D0005BE070 /* ofxMatrix4x4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2832E935121C85D0005BE070 /* ofxMatrix4x4.cpp */; };
 		2832E942121C85D0005BE070 /* ofxQuaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2832E93A121C85D0005BE070 /* ofxQuaternion.cpp */; };
 		2889339B12401B020042B185 /* ofxDirList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2889339912401B020042B185 /* ofxDirList.cpp */; };
+		28924034127639AB0035A5DF /* TriBandsScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28924032127639AB0035A5DF /* TriBandsScene.cpp */; };
 		28D65376123EA53B003EC0E7 /* DaisyScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28D65375123EA53B003EC0E7 /* DaisyScene.cpp */; };
 		28D6537A123EA603003EC0E7 /* BasicParticle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28D65379123EA603003EC0E7 /* BasicParticle.cpp */; };
 		28DF502E1219E43A00249DCF /* kiss_fft.c in Sources */ = {isa = PBXBuildFile; fileRef = 28DF501F1219E43A00249DCF /* kiss_fft.c */; };
@@ -130,6 +131,8 @@
 		2889339712401B020042B185 /* install.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = install.xml; path = ../../../addons/ofxDirList/install.xml; sourceTree = SOURCE_ROOT; };
 		2889339912401B020042B185 /* ofxDirList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxDirList.cpp; path = ../../../addons/ofxDirList/src/ofxDirList.cpp; sourceTree = SOURCE_ROOT; };
 		2889339A12401B020042B185 /* ofxDirList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxDirList.h; path = ../../../addons/ofxDirList/src/ofxDirList.h; sourceTree = SOURCE_ROOT; };
+		28924032127639AB0035A5DF /* TriBandsScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TriBandsScene.cpp; sourceTree = "<group>"; };
+		28924033127639AB0035A5DF /* TriBandsScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TriBandsScene.h; sourceTree = "<group>"; };
 		28D65374123EA53B003EC0E7 /* DaisyScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DaisyScene.h; sourceTree = "<group>"; };
 		28D65375123EA53B003EC0E7 /* DaisyScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DaisyScene.cpp; sourceTree = "<group>"; };
 		28D65378123EA603003EC0E7 /* BasicParticle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BasicParticle.h; sourceTree = "<group>"; };
@@ -277,6 +280,8 @@
 		2832E7EA121C7906005BE070 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				28924032127639AB0035A5DF /* TriBandsScene.cpp */,
+				28924033127639AB0035A5DF /* TriBandsScene.h */,
 				2832E7E7121C78F6005BE070 /* FireFloater.h */,
 				2832E7E8121C78F6005BE070 /* FireFloater.cpp */,
 				280A759E121DBD500021980F /* Halftone.h */,
@@ -853,6 +858,7 @@
 				28D65376123EA53B003EC0E7 /* DaisyScene.cpp in Sources */,
 				28D6537A123EA603003EC0E7 /* BasicParticle.cpp in Sources */,
 				2889339B12401B020042B185 /* ofxDirList.cpp in Sources */,
+				28924034127639AB0035A5DF /* TriBandsScene.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

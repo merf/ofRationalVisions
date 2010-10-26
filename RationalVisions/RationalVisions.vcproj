@@ -218,14 +218,6 @@
 				RelativePath=".\src\SceneManager.h"
 				>
 			</File>
-			<File
-				RelativePath=".\src\SoundEngine.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\SoundEngine.h"
-				>
-			</File>
 			<Filter
 				Name="Scenes"
 				>
@@ -283,6 +275,22 @@
 				</File>
 				<File
 					RelativePath=".\src\TriBandsScene.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Audio"
+				>
+				<File
+					RelativePath=".\BeatDetection.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\SoundEngine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\SoundEngine.h"
 					>
 				</File>
 			</Filter>

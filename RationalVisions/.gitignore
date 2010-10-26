@@ -1,7 +1,6 @@
-RationalVisions/obj 
-RationalVisions/build 
-RationalVisions/bin
-!RationalVisions/bin/data
+RationalVisions/obj/
+RationalVisions/build/
+RationalVisions/bin/
 
 *.app 
 *.ncb 

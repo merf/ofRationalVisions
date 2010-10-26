@@ -1,8 +1,11 @@
 RationalVisions/obj 
 RationalVisions/build 
+RationalVisions/bin
+!RationalVisions/bin/data
 
 *.app 
 *.ncb 
 *.user
+*.suo
 
 .DS_Store 

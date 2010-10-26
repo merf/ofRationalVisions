@@ -1,9 +1,9 @@
-ofRationalVisions/RationalVisions/obj/
-RationalVisions/build/
-RationalVisions/bin/
+/obj
+/build
+/bin
 
-*.app 
-*.ncb 
+*.app
+*.ncb
 *.user
 *.suo
 

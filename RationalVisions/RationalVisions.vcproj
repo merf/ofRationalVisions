@@ -282,7 +282,11 @@
 				Name="Audio"
 				>
 				<File
-					RelativePath=".\BeatDetection.hpp"
+					RelativePath=".\src\BeatDetection.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\BeatDetection.h"
 					>
 				</File>
 				<File

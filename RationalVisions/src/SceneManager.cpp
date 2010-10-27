@@ -15,6 +15,7 @@
 #include "Halftone.h"
 #include "TriBandsScene.h"
 #include "BasicScope.h"
+#include "BeatDetectiveScene.h"
 
 //*******************************************************************************************************
 //*******************************************************************************************************
@@ -28,6 +29,7 @@ m_ShowScope(false)
 //*******************************************************************************************************
 void CSceneManager::Init()
 {
+	m_Scenes.push_back(new NScene::CBeatDetectiveScene());
 	m_Scenes.push_back(new NScene::CTriBandsScene());
 	m_Scenes.push_back(new NScene::CDaisyScene());
 	m_Scenes.push_back(new NScene::CFireFloaterScene());

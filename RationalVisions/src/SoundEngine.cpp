@@ -9,6 +9,7 @@
 #include "RationalVisionsApp.h"
 #include "SoundEngine.h"
 #include "ofxFft.h"
+#include "BeatDetection.h"
 
 #include "RMath.h"
 
@@ -132,6 +133,8 @@ void CSoundEngine::Init(ofBaseApp* p_parent_app)
 	{
 		ofSoundStreamSetup(0, 1, p_parent_app, sampling_freq, m_BufferSize, 4);
 	}
+
+	mp_BeatDetective = new CBeatDetective();
 }
 
 //*******************************************************************************************************
@@ -331,6 +334,8 @@ void CSoundEngine::Update(float time_step)
 		//ofSoundUpdate();
 		ProcessAudio(time_step);
 	}
+
+	mp_BeatDetective->Update();
 }
 
 //*******************************************************************************************************

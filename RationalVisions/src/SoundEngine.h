@@ -14,6 +14,7 @@ class ofxFft;
 class ofBaseApp;
 class ofSoundPlayer;
 class CRationalVisionsApp;
+class CBeatDetective;
 
 #define NUM_BARK_SCALE_BANDS 25
 #define NUM_FFT_BANDS 512
@@ -53,7 +54,11 @@ public:
 	float		GetShortAverage(float f);
 	float		GetMovement(float f);
 
+	float		GetBandMovement(int band);
+
 	float		GetSmoothVolume() { return m_SmoothVolume; }
+
+	CBeatDetective* GetPBeatDetective() { return mp_BeatDetective; }
 
 	ofSoundPlayer*	mp_SoundPlayer;
 
@@ -88,6 +93,8 @@ private:
 	
 	float m_SmoothVolume;
 	float m_SmoothBarkBandMax;
+
+	CBeatDetective* mp_BeatDetective;
 
 	friend class CRationalVisionsApp;
 };

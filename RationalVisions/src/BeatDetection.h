@@ -11,6 +11,7 @@ public:
 	void Update();
 
 	float GetHistoryItem(int band, int i);
+	float GetEntropy(int band);
 
 	static const int HISTORY_SIZE;
 private:

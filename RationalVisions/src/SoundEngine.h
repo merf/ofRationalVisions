@@ -58,6 +58,8 @@ public:
 
 	float		GetSmoothVolume() { return m_SmoothVolume; }
 
+	void		Pause();
+
 	CBeatDetective* GetPBeatDetective() { return mp_BeatDetective; }
 
 	ofSoundPlayer*	mp_SoundPlayer;
@@ -93,6 +95,8 @@ private:
 	
 	float m_SmoothVolume;
 	float m_SmoothBarkBandMax;
+
+	bool m_Paused;
 
 	CBeatDetective* mp_BeatDetective;
 

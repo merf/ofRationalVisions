@@ -93,29 +93,45 @@ namespace NScene
 		}
 		glPopMatrix();
 
-
+		//Beat graph...
 		glPushMatrix();
 		ofTranslate(0.0f, (1.0f-3*h_percent_for_ticker) * h);
+		glPushMatrix();
 		for(int i=0; i<CBeatDetective::HISTORY_SIZE; ++i)
 		{
+			//ofSetColor(255, 255, 255);
+			//ofRect(0, h_percent_for_ticker*h, w_inc, -h_percent_for_ticker*h);
+			//ofSetColor(128, 128, 128);
+			//ofRect(0, h_percent_for_ticker*h, w_inc, -h_percent_for_ticker*h*GetSoundEngine().GetPBeatDetective()->GetAverage());
+
 			float total = 0.0f;
 
-			glPushMatrix();
+			float f = GetSoundEngine().GetPBeatDetective()->GetHistoryItem(i);
+
+			if(GetSoundEngine().GetPBeatDetective()->IsBeat(i))
 			{
-				for(int band=0; band<NUM_BARK_SCALE_BANDS; ++band)
-				{
-					float f = GetSoundEngine().GetPBeatDetective()->GetHistoryItem(band, i);
-					total += f;
-				}
+				ofSetColor(255, 0, 255);
+			}
+			else
+			{
+				ofSetColor(0, 0, 255);
 			}
 
-			total /= NUM_BARK_SCALE_BANDS;
-			ofSetColor(0, 0, total*255);
-			ofRect(0, 0, w_inc, h_percent_for_ticker*h);
+			ofRect(0, h_percent_for_ticker*h, w_inc, -h_percent_for_ticker*h*f);
 
-			glPopMatrix();
 			ofTranslate(w_inc, 0.0f);
 		}
+		glPopMatrix();
+		ofSetColor(255, 255, 255);
+		float avg = GetSoundEngine().GetPBeatDetective()->GetAverage();
+		float line_height = h_percent_for_ticker*h-h_percent_for_ticker*h*avg;
+		ofLine(0, line_height, w, line_height);
+		ofSetColor(255, 0, 0);
+		float var = GetSoundEngine().GetPBeatDetective()->GetVariance();
+		line_height = h_percent_for_ticker*h-h_percent_for_ticker*h*(avg+var);
+		ofLine(0, line_height, w, line_height);
+		line_height = h_percent_for_ticker*h-h_percent_for_ticker*h*(avg-var);
+		ofLine(0, line_height, w, line_height);
 		glPopMatrix();
 	}
 }

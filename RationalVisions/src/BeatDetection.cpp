@@ -9,41 +9,39 @@ const int CBeatDetective::HISTORY_SIZE = 180; //3 seconds @ 60fps
 //*******************************************************************************************************
 void CBeatDetective::Init()
 {
-	m_History.reserve(NUM_BARK_SCALE_BANDS);
+	m_BandHistory.reserve(NUM_BARK_SCALE_BANDS);
 
 	for(int band=0; band<NUM_BARK_SCALE_BANDS; ++band)
 	{
-		m_History.push_back(std::vector<float>());
+		m_BandHistory.push_back(std::vector<float>());
 
-		m_History[band].reserve(HISTORY_SIZE);
+		m_BandHistory[band].reserve(HISTORY_SIZE);
 		for(int i=0; i<HISTORY_SIZE; ++i)
 		{
-			m_History[band].push_back(0.0f);
+			m_BandHistory[band].push_back(0.0f);
 		}
 	}
 
+	m_History.reserve(HISTORY_SIZE);
+	m_Beats.reserve(HISTORY_SIZE);
+
+	for(int i=0; i<HISTORY_SIZE; ++i)
+	{
+		m_History.push_back(0.0f);
+		m_Beats.push_back(false);
+	}
+
 	m_CurrHistoryIndex = 0;
+
+	m_Average = 0.0f;
 }
 
 //*******************************************************************************************************
 void CBeatDetective::Update()
 {
-	int band = 0;
-	for(float f=0.0f; f<=1.0f; f+=1.0f/NUM_BARK_SCALE_BANDS)
-	{
-		float t_val = CRationalVisionsApp::Get()->GetSoundEngine().GetMovement(f);
+	StoreIncomingAudio();
 
-		RMath::Limit(0.0f, t_val, 1.0f);
-
-		//if(t_val < 0.8f)
-		//{
-		//	t_val = 0.0f;
-		//}
-
-		m_History[band][m_CurrHistoryIndex] = t_val;
-		++band;
-	}
-	//m_History[m_CurrHistoryIndex] = val;
+	FindBeats();
 
 	++m_CurrHistoryIndex;
 	if(m_CurrHistoryIndex >= HISTORY_SIZE)
@@ -53,15 +51,88 @@ void CBeatDetective::Update()
 }
 
 //*******************************************************************************************************
-float CBeatDetective::GetHistoryItem(int band, int i) 
-{ 
-	int index = m_CurrHistoryIndex - i;
+void CBeatDetective::StoreIncomingAudio()
+{
+	int band = 0;
+	float total = 0.0f;
+	for(float f=0.0f; f<=1.0f; f+=1.0f/NUM_BARK_SCALE_BANDS)
+	{
+		float t_val = CRationalVisionsApp::Get()->GetSoundEngine().GetMovement(f);
+
+		RMath::Limit(0.0f, t_val, 1.0f);
+
+		m_BandHistory[band][m_CurrHistoryIndex] = t_val;
+		total += t_val;
+		++band;
+	}
+
+	m_History[m_CurrHistoryIndex] = total / NUM_BARK_SCALE_BANDS;
+}
+
+//*******************************************************************************************************
+void CBeatDetective::FindBeats()
+{
+	int oldest_item = m_CurrHistoryIndex + 1;
+	if(oldest_item >= HISTORY_SIZE)
+	{
+		oldest_item = 0;
+	}
+
+	const float one_on_history_size = 1.0f / HISTORY_SIZE;
+	m_Average -= m_History[oldest_item] * one_on_history_size;
+	m_Average += m_History[m_CurrHistoryIndex] * one_on_history_size;
+
+	m_Variance = 0.0f;
+	for(int i=0; i<HISTORY_SIZE; ++i)
+	{
+		m_Variance += pow((m_History[i] - m_Average), 2);
+	}
+	m_Variance /= HISTORY_SIZE;
+	m_Variance = pow(m_Variance, 0.5f);
+
+	if(m_History[m_CurrHistoryIndex] > m_Average + m_Variance)
+	{
+		m_Beats[m_CurrHistoryIndex] = true;
+	}
+	else
+	{
+		m_Beats[m_CurrHistoryIndex] = false;
+	}
+}
+
+//*******************************************************************************************************
+float CBeatDetective::GetVariance()
+{
+	return m_Variance;
+}
+
+//*******************************************************************************************************
+int CBeatDetective::GetIndexForAge(int age)
+{
+	int index = m_CurrHistoryIndex - age;
 	if(index < 0)
 	{
 		index += HISTORY_SIZE;
 	}
+	return index;
+}
 
-	return m_History[band][index];
+//*******************************************************************************************************
+float CBeatDetective::GetHistoryItem(int band, int age) 
+{ 
+	return m_BandHistory[band][GetIndexForAge(age)];
+}
+
+//*******************************************************************************************************
+float CBeatDetective::GetHistoryItem(int age) 
+{ 
+	return m_History[GetIndexForAge(age)];
+}
+
+//*******************************************************************************************************
+bool CBeatDetective::IsBeat(int age) 
+{
+	return m_Beats[GetIndexForAge(age)];
 }
 
 //*******************************************************************************************************
@@ -77,7 +148,7 @@ float CBeatDetective::GetEntropy(int band)
 			int num_contributions = 0;
 			for(int i=0; i<HISTORY_SIZE; ++i)
 			{
-				float t_val = m_History[band][i];
+				float t_val = m_BandHistory[band][i];
 				if(t_val > 0.0f)
 				{
 					total_contribution += t_val;
@@ -100,7 +171,7 @@ float CBeatDetective::GetEntropy(int band)
 			int num_fluffy = 0;
 			for(int i=0; i<HISTORY_SIZE; ++i)
 			{
-				float t_val = m_History[band][i];
+				float t_val = m_BandHistory[band][i];
 				if(t_val > 0.0f && t_val < 0.8f)
 				{
 					num_fluffy++;
@@ -111,4 +182,6 @@ float CBeatDetective::GetEntropy(int band)
 		}
 		break;
 	}
+
+	return 0.0f;
 }

@@ -34,7 +34,8 @@ CSoundEngine::CSoundEngine(ofBaseApp* p_parent_app, int buffer_size)
 m_BufferSize(buffer_size),
 m_SmoothVolume(1.0f),
 m_SmoothBarkBandMax(0.0f),
-m_CurrentFile("Live Audio")
+m_CurrentFile("Live Audio"),
+m_Paused(false)
 {
 	Init(p_parent_app);
 }
@@ -129,6 +130,7 @@ void CSoundEngine::Init(ofBaseApp* p_parent_app)
 
 	//memset(m_BarkLongAverages, 1, sizeof(float) * NUM_BARK_SCALE_BANDS);
 	memset(m_BarkShortAverages, 0, sizeof(float) * NUM_BARK_SCALE_BANDS);
+	memset(m_BarkVariance, 0.0000000001f, sizeof(float) * NUM_BARK_SCALE_BANDS);
 	memset(mp_RawAudio, 0, sizeof(float) * m_BufferSize);
 	
 	if(!from_file)
@@ -282,6 +284,7 @@ float CSoundEngine::GetMovement(float f)
 		
 		float diff_sq = pow(diff, 2);
 		float variance = GetVariance(f);
+		RMath::LimitLower(variance, 0.0000000001f);
 		float movement_mag = diff_sq / variance;
 
 		static float one_on_num_standard_dev_that_counts_as_max = 1.0f / 3.0f;
@@ -320,24 +323,34 @@ float* CSoundEngine::GetRawAudio(int& buffer_size)
 }
 
 //*******************************************************************************************************
+void CSoundEngine::Pause()
+{
+	m_Paused = !m_Paused;
+	mp_SoundPlayer->setPaused(m_Paused);
+}
+
+//*******************************************************************************************************
 void CSoundEngine::Update(float time_step)
 {
-	if(from_file)
+	if(!m_Paused)
 	{
-#ifdef SAVE_FRAMES
-		float totalFrames = (mp_SoundPlayer->length / mp_SoundPlayer->internalFreq) * 60.0f;
-		float musicPos = (float)ofGetFrameNum() / totalFrames;
-		mp_SoundPlayer->setPosition(musicPos);
-#endif
+		if(from_file)
+		{
+	#ifdef SAVE_FRAMES
+			float totalFrames = (mp_SoundPlayer->length / mp_SoundPlayer->internalFreq) * 60.0f;
+			float musicPos = (float)ofGetFrameNum() / totalFrames;
+			mp_SoundPlayer->setPosition(musicPos);
+	#endif
 
-		mp_FFTOutput = ofSoundGetSpectrum(m_NumFFTBands);
-		mp_RawAudio = ofSoundGetWave(m_BufferSize);
+			mp_FFTOutput = ofSoundGetSpectrum(m_NumFFTBands);
+			mp_RawAudio = ofSoundGetWave(m_BufferSize);
 
-		//ofSoundUpdate();
-		ProcessAudio(time_step);
+			//ofSoundUpdate();
+			ProcessAudio(time_step);
+		}
+
+		mp_BeatDetective->Update();
 	}
-
-	mp_BeatDetective->Update();
 }
 
 //*******************************************************************************************************

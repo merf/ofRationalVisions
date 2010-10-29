@@ -138,6 +138,9 @@ void CRationalVisionsApp::keyPressed(int key)
 		case '[':
 			mp_SoundEngine->RWD();
 			break;
+		case 'p':
+			mp_SoundEngine->Pause();
+			break;
 		default:
 			mp_SceneManager->KeyPressed(key);
 			break;

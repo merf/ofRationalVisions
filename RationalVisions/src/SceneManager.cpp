@@ -55,12 +55,16 @@ void CSceneManager::Update(float time_step)
 //*******************************************************************************************************
 void CSceneManager::Draw()
 {
-	m_Scenes[m_CurrScene]->Draw();
-	
 	if(m_ShowScope)
 	{
+		glPushMatrix();
 		mp_ScopeScene->Draw();
+		glPopMatrix();
 	}
+
+	glPushMatrix();
+		m_Scenes[m_CurrScene]->Draw();
+	glPopMatrix();
 }
 
 //*******************************************************************************************************

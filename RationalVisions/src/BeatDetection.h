@@ -38,6 +38,8 @@ public:
 	float	GetHistoryItem(int band, int age);
 	float	GetEntropy(int band);
 
+	float	GetPhase();
+
 	static const int HISTORY_SIZE;
 private:
 	int		GetIndexForAge(int age);

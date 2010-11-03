@@ -99,18 +99,11 @@ namespace NScene
 		glPushMatrix();
 		for(int i=0; i<CBeatDetective::HISTORY_SIZE; ++i)
 		{
-			//ofSetColor(255, 255, 255);
-			//ofRect(0, h_percent_for_ticker*h, w_inc, -h_percent_for_ticker*h);
-			//ofSetColor(128, 128, 128);
-			//ofRect(0, h_percent_for_ticker*h, w_inc, -h_percent_for_ticker*h*GetSoundEngine().GetPBeatDetective()->GetAverage());
-
-			float total = 0.0f;
-
 			float f = GetSoundEngine().GetPBeatDetective()->GetHistoryItem(i);
 
 			if(GetSoundEngine().GetPBeatDetective()->IsBeat(i))
 			{
-				ofSetColor(255, 0, 255);
+				ofSetColor(0, 255, 0);
 			}
 			else
 			{
@@ -132,6 +125,31 @@ namespace NScene
 		ofLine(0, line_height, w, line_height);
 		line_height = h_percent_for_ticker*h-h_percent_for_ticker*h*(avg-var);
 		ofLine(0, line_height, w, line_height);
+		glPopMatrix();
+
+
+		stringstream fps_str;
+		float phase = GetSoundEngine().GetPBeatDetective()->GetPhase();
+		fps_str << "Phase = " << phase;
+		static int font_size = 12;
+		float curr_y = 0;
+		ofSetColor(255, 255, 255);
+		ofDrawBitmapString(fps_str.str(), 2, 50);
+
+		glPushMatrix();
+		ofTranslate(0.0f, (1.0f-3*h_percent_for_ticker) * h);
+		int counter = 0;
+		for(int i=0; i<CBeatDetective::HISTORY_SIZE; ++i)
+		{
+			counter++;
+			if(counter > phase)
+			{
+				ofLine(0, 0, 0, line_height);
+				counter = 0;
+			}
+
+			ofTranslate(w_inc, 0.0f);
+		}
 		glPopMatrix();
 	}
 }

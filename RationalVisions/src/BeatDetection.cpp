@@ -107,6 +107,51 @@ float CBeatDetective::GetVariance()
 }
 
 //*******************************************************************************************************
+float CBeatDetective::GetPhase()
+{
+	int prev_beat_pos = -1;
+	std::vector<int> beat_gaps;
+
+	std::map<int, int> beat_gap_counts;
+
+	for(int i=0; i<HISTORY_SIZE; ++i)
+	{
+		if(m_Beats[i])
+		{
+			if(prev_beat_pos != -1)
+			{
+				int gap = i-prev_beat_pos;
+				if(gap > 1)
+				{
+					if(beat_gap_counts.find(gap) == beat_gap_counts.end())
+					{
+						beat_gap_counts[gap] = 0;
+					}
+					beat_gap_counts[gap]++;
+					beat_gaps.push_back(i-prev_beat_pos);
+				}
+			}
+			prev_beat_pos = i;
+		}
+	}
+
+	if(beat_gaps.empty())
+	{
+		return 0.0f;
+	}
+	else
+	{
+		float avg = 0.0f;
+		for(std::vector<int>::iterator it = beat_gaps.begin(); it != beat_gaps.end(); ++it)
+		{
+			avg += *it;
+		}
+
+		return avg / (float)beat_gaps.size();
+	}
+}
+
+//*******************************************************************************************************
 int CBeatDetective::GetIndexForAge(int age)
 {
 	int index = m_CurrHistoryIndex - age;

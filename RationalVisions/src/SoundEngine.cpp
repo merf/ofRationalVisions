@@ -18,9 +18,10 @@ ENormalizationStrategy g_NormalizationStrategy = SMOOTH_LIMIT_BARK_BANDS;
 static bool from_file = true;
 static bool stream_files = true;
 
-//const string MUSIC_DIR = "music/";
+const string MUSIC_DIR = "music/";
+//const string MUSIC_DIR = "music/local_music/";
 //music folder under base OF dir
-const string MUSIC_DIR = "../../../../../music/";
+//const string MUSIC_DIR = "../../../../../music/";
 
 static int static_short_history_size = 3;
 static int static_long_history_size = 50;

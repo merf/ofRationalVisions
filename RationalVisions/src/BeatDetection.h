@@ -5,6 +5,16 @@
 //-------------------------------------------------------------------------------------------------------
 class CBeatChannelHistoryItem
 {
+public:
+	CBeatChannelHistoryItem(float val, bool is_beat) : m_Value(val), m_IsBeat(is_beat) {}
+
+	float	GetValue() { return m_Value; }
+	void	SetValue(float val) { m_Value = val; }
+
+	bool	IsBeat() { return m_IsBeat; }
+	void	SetIsBeat(bool is_beat) { m_IsBeat = is_beat; }
+
+private:
 	float	m_Value;
 	bool	m_IsBeat;
 };
@@ -12,8 +22,34 @@ class CBeatChannelHistoryItem
 //-------------------------------------------------------------------------------------------------------
 class CBeatChannel
 {
+public:
+	CBeatChannel(int history_size, float max_band);
+
+	float									GetMaxBand() const { return m_MaxBandToInclude; }
+
+	float									GetHistoryItem(int index) { return m_History[index].GetValue(); }
+	void									SetHistoryItem(int index, float val) { m_History[index].SetValue(val); }
+
+	void									FindBeats();
+	void									CalcBPM();
+
+	bool									IsBeat(int age);
+
+	float									GetAverage() { return m_Average; }
+	float									GetVariance() { return m_Variance; }
+
+	float									GetBPM();
+private:
+	bool									m_PreviousWasBeat;
+
+	int										m_HistorySize;
+
+	float									m_MaxBandToInclude;
+
 	float									m_Average;
 	float									m_Variance;
+
+	float									m_PreviousBPM;
 
 	std::vector<CBeatChannelHistoryItem>	m_History;
 };
@@ -31,27 +67,28 @@ public:
 	void	FindBeats();
 
 	bool	IsBeat(int age);
-	float	GetAverage() { return m_Average; }
-	float	GetVariance();
+	bool	IsBeat(int age, int channel);
+	float	GetAverage(int channel) { return m_Channels[channel].GetAverage(); }
+	float	GetVariance(int channel) { return m_Channels[channel].GetVariance(); }
 
 	float	GetHistoryItem(int age);
-	float	GetHistoryItem(int band, int age);
-	float	GetEntropy(int band);
+	float	GetChannelHistoryItem(int channel, int age);
+	float	GetBandHistoryItem(int band, int age);
 
-	float	GetPhase();
+	float	GetChannelMaxBand(int channel) { return m_Channels[channel].GetMaxBand(); }
+
+	float	GetBPM(int channel) { return m_Channels[channel].GetBPM(); }
 
 	static const int HISTORY_SIZE;
+	static const int NUM_CHANNELS;
+	static int		GetIndexForAge(int age);
+
 private:
-	int		GetIndexForAge(int age);
+	typedef std::vector<CBeatChannel>	TBeatChannelList;	
+	TBeatChannelList					m_Channels;
 
-	//TODO - would be nicer to generalise the history and beats to be an arbitrary number of channels that data is streamed into..
-
-	std::vector<float>				m_History;
 	std::vector<std::vector<float>>	m_BandHistory;
-	int								m_CurrHistoryIndex;
+	static int						m_CurrHistoryIndex;
 
-	std::vector<bool>				m_Beats;
-	float							m_Average;
-	float							m_Variance;
-	float dummy;
+	friend class CBeatChannel;
 };

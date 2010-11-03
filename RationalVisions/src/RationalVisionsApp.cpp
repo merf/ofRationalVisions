@@ -34,7 +34,7 @@ void CRationalVisionsApp::setup()
 	ofSetFrameRate(60);
 	ofSetVerticalSync(true);
 #else
-	ofSetFrameRate(60);
+	//ofSetFrameRate(60);
 	ofSetVerticalSync(true);
 #endif
 

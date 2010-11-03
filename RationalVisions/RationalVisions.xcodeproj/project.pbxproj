@@ -18,6 +18,8 @@
 		2832E940121C85D0005BE070 /* ofxMatrix3x3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2832E933121C85D0005BE070 /* ofxMatrix3x3.cpp */; };
 		2832E941121C85D0005BE070 /* ofxMatrix4x4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2832E935121C85D0005BE070 /* ofxMatrix4x4.cpp */; };
 		2832E942121C85D0005BE070 /* ofxQuaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2832E93A121C85D0005BE070 /* ofxQuaternion.cpp */; };
+		284879FD128221CC00C9C477 /* BeatDetection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 284879F9128221CC00C9C477 /* BeatDetection.cpp */; };
+		284879FE128221CC00C9C477 /* BeatDetectiveScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 284879FB128221CC00C9C477 /* BeatDetectiveScene.cpp */; };
 		2889339B12401B020042B185 /* ofxDirList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2889339912401B020042B185 /* ofxDirList.cpp */; };
 		28924034127639AB0035A5DF /* TriBandsScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28924032127639AB0035A5DF /* TriBandsScene.cpp */; };
 		28D65376123EA53B003EC0E7 /* DaisyScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28D65375123EA53B003EC0E7 /* DaisyScene.cpp */; };
@@ -127,6 +129,10 @@
 		2832E93D121C85D0005BE070 /* ofxVec3f.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxVec3f.h; sourceTree = "<group>"; };
 		2832E93E121C85D0005BE070 /* ofxVec4f.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxVec4f.h; sourceTree = "<group>"; };
 		2832E93F121C85D0005BE070 /* ofxVectorMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxVectorMath.h; sourceTree = "<group>"; };
+		284879F9128221CC00C9C477 /* BeatDetection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BeatDetection.cpp; sourceTree = "<group>"; };
+		284879FA128221CC00C9C477 /* BeatDetection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeatDetection.h; sourceTree = "<group>"; };
+		284879FB128221CC00C9C477 /* BeatDetectiveScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BeatDetectiveScene.cpp; sourceTree = "<group>"; };
+		284879FC128221CC00C9C477 /* BeatDetectiveScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeatDetectiveScene.h; sourceTree = "<group>"; };
 		2889339612401B020042B185 /* Instructions.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Instructions.txt; path = ../../../addons/ofxDirList/doc/Instructions.txt; sourceTree = SOURCE_ROOT; };
 		2889339712401B020042B185 /* install.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = install.xml; path = ../../../addons/ofxDirList/install.xml; sourceTree = SOURCE_ROOT; };
 		2889339912401B020042B185 /* ofxDirList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxDirList.cpp; path = ../../../addons/ofxDirList/src/ofxDirList.cpp; sourceTree = SOURCE_ROOT; };
@@ -249,6 +255,10 @@
 		2832E689121C664E005BE070 /* Sound */ = {
 			isa = PBXGroup;
 			children = (
+				284879F9128221CC00C9C477 /* BeatDetection.cpp */,
+				284879FA128221CC00C9C477 /* BeatDetection.h */,
+				284879FB128221CC00C9C477 /* BeatDetectiveScene.cpp */,
+				284879FC128221CC00C9C477 /* BeatDetectiveScene.h */,
 				2832E68B121C6688005BE070 /* SoundEngine.h */,
 				2832E68D121C67A1005BE070 /* SoundEngine.cpp */,
 			);
@@ -859,6 +869,8 @@
 				28D6537A123EA603003EC0E7 /* BasicParticle.cpp in Sources */,
 				2889339B12401B020042B185 /* ofxDirList.cpp in Sources */,
 				28924034127639AB0035A5DF /* TriBandsScene.cpp in Sources */,
+				284879FD128221CC00C9C477 /* BeatDetection.cpp in Sources */,
+				284879FE128221CC00C9C477 /* BeatDetectiveScene.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

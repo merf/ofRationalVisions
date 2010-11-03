@@ -87,7 +87,7 @@ private:
 	typedef std::vector<CBeatChannel>	TBeatChannelList;	
 	TBeatChannelList					m_Channels;
 
-	std::vector<std::vector<float>>	m_BandHistory;
+	std::vector<std::vector<float> >	m_BandHistory;
 	static int						m_CurrHistoryIndex;
 
 	friend class CBeatChannel;

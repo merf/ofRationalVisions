@@ -46,7 +46,7 @@ void CBasicScope::Draw()
 	
 	int buffer_size = 0;
 	float* raw_audio = CRationalVisionsApp::Get()->GetSoundEngine().GetRawAudio(buffer_size);
-	for(int i=0; i<buffer_size; i++)
+	for(int i=0; i<buffer_size; i+=5)
 	{
 		float x = w*i/(float)buffer_size;
 		float t_h = raw_audio[i] * h * 0.25f;

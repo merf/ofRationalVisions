@@ -29,6 +29,7 @@ namespace NScene
 		float h_percent_for_ticker = 0.2f;
 		h_inc *= h_percent_for_ticker;
 
+		/*
 		glPushMatrix();
 		ofTranslate(0.0f, (1.0f-h_percent_for_ticker) * h);
 
@@ -48,8 +49,9 @@ namespace NScene
 			ofTranslate(0.0f, h_inc);
 		}
 		glPopMatrix();
-
+*/
 		//Channels...
+		/*
 		glPushMatrix();
 		ofTranslate(0.0f, (1.0f-2*h_percent_for_ticker) * h);
 		for(int i=0; i<CBeatDetective::HISTORY_SIZE; ++i)
@@ -85,6 +87,7 @@ namespace NScene
 			ofTranslate(w_inc, 0.0f);
 		}
 		glPopMatrix();
+		 */
 
 		glPushMatrix();
 		ofTranslate(0.0f, (1.0f-2*h_percent_for_ticker) * h);

@@ -114,6 +114,11 @@ float CBeatDetective::GetPhase()
 
 	std::map<int, int> beat_gap_counts;
 
+	//ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***
+	//ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***
+	//ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***
+	//This does not deal correctly with the fact the beats are in a circular buffer
+	//Need to start from first item...
 	for(int i=0; i<HISTORY_SIZE; ++i)
 	{
 		if(m_Beats[i])

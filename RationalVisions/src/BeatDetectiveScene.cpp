@@ -29,71 +29,80 @@ namespace NScene
 		float h_percent_for_ticker = 0.2f;
 		h_inc *= h_percent_for_ticker;
 
-		/*
-		glPushMatrix();
-		ofTranslate(0.0f, (1.0f-h_percent_for_ticker) * h);
+		static bool draw_spectrum = true;
+		static bool draw_beat_graph = true;
 
-		for(int band=0; band<NUM_BARK_SCALE_BANDS; ++band)
+		if(draw_spectrum)
 		{
 			glPushMatrix();
+			ofTranslate(0.0f, (1.0f-h_percent_for_ticker) * h);
+
+			for(int band=0; band<NUM_BARK_SCALE_BANDS; ++band)
 			{
-				for(int i=0; i<CBeatDetective::HISTORY_SIZE; ++i)
+				glPushMatrix();
 				{
-					float f = GetSoundEngine().GetPBeatDetective()->GetBandHistoryItem(band, i);
-					ofSetColor(f*255, 0, 0);
-					ofRect(0, 0, w_inc, h_inc);
-					ofTranslate(w_inc, 0.0f);
+					for(int i=0; i<CBeatDetective::HISTORY_SIZE; ++i)
+					{
+						float f = GetSoundEngine().GetPBeatDetective()->GetBandHistoryItem(band, i);
+						ofSetColor(f*255, 0, 0);
+						ofRect(0, 0, w_inc, h_inc);
+						ofTranslate(w_inc, 0.0f);
+					}
 				}
+				glPopMatrix();
+				ofTranslate(0.0f, h_inc);
 			}
 			glPopMatrix();
-			ofTranslate(0.0f, h_inc);
 		}
-		glPopMatrix();
-*/
-		//Channels...
-		/*
-		glPushMatrix();
-		ofTranslate(0.0f, (1.0f-2*h_percent_for_ticker) * h);
-		for(int i=0; i<CBeatDetective::HISTORY_SIZE; ++i)
+
+		if(draw_beat_graph)
 		{
 			glPushMatrix();
+			ofTranslate(0.0f, (1.0f-2*h_percent_for_ticker) * h);
+			for(int i=0; i<CBeatDetective::HISTORY_SIZE; ++i)
 			{
-				for(int channel=0; channel<CBeatDetective::NUM_CHANNELS; ++channel)
+				glPushMatrix();
 				{
-					float channel_height = GetSoundEngine().GetPBeatDetective()->GetChannelMaxBand(channel);
-
-					if(channel > 0)
+					for(int channel=0; channel<CBeatDetective::NUM_CHANNELS; ++channel)
 					{
-						channel_height -= GetSoundEngine().GetPBeatDetective()->GetChannelMaxBand(channel-1);
-					}
+						float channel_height = GetSoundEngine().GetPBeatDetective()->GetChannelMaxBand(channel);
 
-					float colour_val = channel / (float)(CBeatDetective::NUM_CHANNELS-1);
-					if(GetSoundEngine().GetPBeatDetective()->IsBeat(i, channel))
-					{
-						ofSetColor(255*colour_val, 0, 255);
-					}
-					else
-					{
-						ofSetColor(255, 255, 255);
-					}
+						if(channel > 0)
+						{
+							channel_height -= GetSoundEngine().GetPBeatDetective()->GetChannelMaxBand(channel-1);
+						}
 
-					float val = GetSoundEngine().GetPBeatDetective()->GetChannelHistoryItem(channel, i);
-					ofLine(0.0f, h_percent_for_ticker*h*channel_height*(1.0f-val), 0, h_percent_for_ticker*h*channel_height);
+						float colour_val = channel / (float)(CBeatDetective::NUM_CHANNELS-1);
+						if(GetSoundEngine().GetPBeatDetective()->IsBeat(i, channel))
+						{
+							ofSetColor(255*colour_val, 0, 255);
+						}
+						else
+						{
+							ofSetColor(255, 255, 255);
+						}
 
-					ofTranslate(0.0f, h_percent_for_ticker*h*channel_height);
+						float val = GetSoundEngine().GetPBeatDetective()->GetChannelHistoryItem(channel, i);
+						ofLine(0.0f, h_percent_for_ticker*h*channel_height*(1.0f-val), 0, h_percent_for_ticker*h*channel_height);
+
+						ofTranslate(0.0f, h_percent_for_ticker*h*channel_height);
+					}
 				}
+				glPopMatrix();
+				ofTranslate(w_inc, 0.0f);
 			}
 			glPopMatrix();
-			ofTranslate(w_inc, 0.0f);
 		}
-		glPopMatrix();
-		 */
 
 		glPushMatrix();
 		ofTranslate(0.0f, (1.0f-2*h_percent_for_ticker) * h);
 		for(int channel=0; channel<CBeatDetective::NUM_CHANNELS; ++channel)
 		{
 			float channel_height = GetSoundEngine().GetPBeatDetective()->GetChannelMaxBand(channel);
+			if(channel > 0)
+			{
+				channel_height -= GetSoundEngine().GetPBeatDetective()->GetChannelMaxBand(channel-1);
+			}
 
 			stringstream str;
 			float bpm = GetSoundEngine().GetPBeatDetective()->GetBPM(channel);
@@ -103,7 +112,11 @@ namespace NScene
 			ofSetColor(255, 255, 255);
 			ofDrawBitmapString(str.str(), 2, h_percent_for_ticker*h*channel_height-20);
 
-			//ofTranslate(0.0f, h_percent_for_ticker*h*channel_height);
+			float confidence = GetSoundEngine().GetPBeatDetective()->GetBPMConfidence(channel);
+			float line_height = h_percent_for_ticker*h*channel_height*(1.0f-confidence);
+			ofLine(0.0f, line_height, 50.0f, line_height);
+
+			ofTranslate(0.0f, h_percent_for_ticker*h*channel_height);
 		}
 		glPopMatrix();
 
@@ -129,6 +142,7 @@ namespace NScene
 		//	ofTranslate(w_inc, 0.0f);
 		//}
 		//glPopMatrix();
+
 		//ofSetColor(255, 255, 255);
 		//float avg = GetSoundEngine().GetPBeatDetective()->GetAverage();
 		//float line_height = h_percent_for_ticker*h-h_percent_for_ticker*h*avg;

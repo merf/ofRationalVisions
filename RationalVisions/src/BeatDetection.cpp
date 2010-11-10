@@ -4,15 +4,18 @@
 #include "RMath.h"
 
 const int	CBeatDetective::HISTORY_SIZE = 180; //3 seconds @ 60fps
-const int	CBeatDetective::NUM_CHANNELS = 4;
 int			CBeatDetective::m_CurrHistoryIndex = 0;
 
-const float CHANNEL_BOUNDARIES[CBeatDetective::NUM_CHANNELS] = { 0.25f, 0.5f, 0.75f, 1.0f };
+//const int	CBeatDetective::NUM_CHANNELS = 4;
+//const float CHANNEL_BOUNDARIES[CBeatDetective::NUM_CHANNELS] = { 0.25f, 0.5f, 0.75f, 1.0f };
+
+const int	CBeatDetective::NUM_CHANNELS = 2;
+const float CHANNEL_BOUNDARIES[CBeatDetective::NUM_CHANNELS] = { 0.2f, 1.0f };
 
 //*******************************************************************************************************
 //*******************************************************************************************************
 CBeatChannel::CBeatChannel(int history_size, float max_band) 
-: m_PreviousWasBeat(false), m_HistorySize(history_size), m_MaxBandToInclude(max_band), m_Average(0.0f), m_Variance(0.0f), m_PreviousBPM(120.0f)
+: m_StepsSinceLastBeat(100), m_HistorySize(history_size), m_MaxBandToInclude(max_band), m_Average(0.0f), m_Variance(0.0f), m_PreviousBPM(120.0f)
 {
 	m_History.reserve(history_size);
 	for(int i=0; i<history_size; ++i)
@@ -37,6 +40,8 @@ void CBeatChannel::FindBeats()
 		oldest_item = 0;
 	}
 
+	static int min_steps_between_beats = 10;
+
 	static bool use_variance = true;
 	if(use_variance)
 	{
@@ -54,23 +59,15 @@ void CBeatChannel::FindBeats()
 
 		//TODO - this should be dynamic based on how prominent the beat is...
 		static float variance_mul = 1.5f;
-
-		if(m_History[CBeatDetective::m_CurrHistoryIndex].GetValue() > m_Average + m_Variance * variance_mul)
+		if(m_StepsSinceLastBeat > min_steps_between_beats && m_History[CBeatDetective::m_CurrHistoryIndex].GetValue() > m_Average + m_Variance * variance_mul)
 		{
-			if(!m_PreviousWasBeat)
-			{
-				m_History[CBeatDetective::m_CurrHistoryIndex].SetIsBeat(true);
-				m_PreviousWasBeat = true;
-			}
-			else
-			{
-				m_History[CBeatDetective::m_CurrHistoryIndex].SetIsBeat(false);
-			}
+			m_History[CBeatDetective::m_CurrHistoryIndex].SetIsBeat(true);
+			m_StepsSinceLastBeat = 0;
 		}
 		else
 		{
 			m_History[CBeatDetective::m_CurrHistoryIndex].SetIsBeat(false);
-			m_PreviousWasBeat = false;
+			++m_StepsSinceLastBeat;
 		}
 	}
 	else
@@ -85,13 +82,15 @@ void CBeatChannel::FindBeats()
 			}
 		}
 
-		if(m_History[CBeatDetective::m_CurrHistoryIndex].GetValue() > max * 0.5f)
+		if(m_StepsSinceLastBeat > min_steps_between_beats && m_History[CBeatDetective::m_CurrHistoryIndex].GetValue() > max * 0.5f)
 		{
 			m_History[CBeatDetective::m_CurrHistoryIndex].SetIsBeat(true);
+			m_StepsSinceLastBeat = 0;
 		}
 		else
 		{
 			m_History[CBeatDetective::m_CurrHistoryIndex].SetIsBeat(false);
+			++m_StepsSinceLastBeat;
 		}
 	}
 
@@ -105,17 +104,12 @@ void CBeatChannel::CalcBPM()
 
 	std::map<int, int> beat_gap_counts;
 
-	//ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***
-	//ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***
-	//ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***ERROR***
-	//This does not deal correctly with the fact the beats are in a circular buffer
-	//Need to start from first item...
 	for(int i=0; i<m_HistorySize; ++i)
 	{
-		int index = CBeatDetective::m_CurrHistoryIndex + i;
-		if(index >= m_HistorySize)
+		int index = CBeatDetective::m_CurrHistoryIndex - i;
+		if(index < 0)
 		{
-			index -= m_HistorySize;
+			index += m_HistorySize;
 		}
 
 		if(m_History[index].IsBeat())
@@ -123,16 +117,21 @@ void CBeatChannel::CalcBPM()
 			if(prev_beat_pos != -1)
 			{
 				int gap = i-prev_beat_pos;
-				if(gap > 1)
+				if(gap > 10)
 				{
 					if(beat_gap_counts.find(gap) == beat_gap_counts.end())
 					{
 						beat_gap_counts[gap] = 0;
 					}
 					beat_gap_counts[gap]++;
+
+					prev_beat_pos = i;
 				}
 			}
-			prev_beat_pos = i;
+			else
+			{
+				prev_beat_pos = i;
+			}
 		}
 	}
 
@@ -185,6 +184,20 @@ void CBeatChannel::CalcBPM()
 		}
 
 		float phase = total / (float)beat_gaps.size();
+
+		float error = 1.0f;
+		for(std::vector<float>::iterator it = beat_gaps.begin(); it != beat_gaps.end(); ++it)
+		{
+			error += fabsf(*it - phase) * 0.1f;
+		}
+
+		m_Confidence = 1.0f / error;
+
+		if(beat_gaps.size() < 3)
+		{
+			m_Confidence = 0.0f;
+		}
+
 		float bpm = 60 * 60 / phase;
 
 		if(bpm < 80.0f)
@@ -196,7 +209,9 @@ void CBeatChannel::CalcBPM()
 			bpm /= 2.0f;
 		}
 
-		m_PreviousBPM = RMath::Lerp(m_PreviousBPM, bpm, 0.01f);
+		static float stat_lerp_speed = 0.1f;
+		float lerp_speed = m_Confidence * stat_lerp_speed;
+		m_PreviousBPM = RMath::Lerp(m_PreviousBPM, bpm, stat_lerp_speed);
 	}
 }
 

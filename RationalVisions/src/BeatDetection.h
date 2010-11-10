@@ -35,12 +35,13 @@ public:
 
 	bool									IsBeat(int age);
 
-	float									GetAverage() { return m_Average; }
-	float									GetVariance() { return m_Variance; }
+	float									GetAverage() const { return m_Average; }
+	float									GetVariance() const { return m_Variance; }
 
 	float									GetBPM();
+	float									GetBPMConfidence() const { return m_Confidence; }
 private:
-	bool									m_PreviousWasBeat;
+	int										m_StepsSinceLastBeat;
 
 	int										m_HistorySize;
 
@@ -50,6 +51,7 @@ private:
 	float									m_Variance;
 
 	float									m_PreviousBPM;
+	float									m_Confidence;
 
 	std::vector<CBeatChannelHistoryItem>	m_History;
 };
@@ -78,6 +80,7 @@ public:
 	float	GetChannelMaxBand(int channel) { return m_Channels[channel].GetMaxBand(); }
 
 	float	GetBPM(int channel) { return m_Channels[channel].GetBPM(); }
+	float	GetBPMConfidence(int channel) { return m_Channels[channel].GetBPMConfidence(); }
 
 	static const int HISTORY_SIZE;
 	static const int NUM_CHANNELS;
